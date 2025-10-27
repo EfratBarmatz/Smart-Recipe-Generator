@@ -9,11 +9,19 @@ namespace Smart_Recipe_Generator.Controllers
     [ApiController]
     public class RecipesController : ControllerBase
     {
-        private readonly IRecipeService _recipeService;
+        private readonly IAiRecipeService _recipeService;
 
-        public RecipesController(IRecipeService recipeService)
+        public RecipesController(IAiRecipeService recipeService)
         {
             _recipeService = recipeService;
+        }
+
+        // GET api/recipes/impl
+        [HttpGet("impl")]
+        public ActionResult<string> GetImplementation()
+        {
+            // Returns the concrete implementation type resolved by DI (for diagnostics)
+            return Ok(_recipeService?.GetType().FullName ?? "<null>");
         }
 
         // GET: api/recipes
