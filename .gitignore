@@ -1,0 +1,38 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+
+# Publish outputs
+publish/
+
+# ASP.NET temporary files
+*.dotCover
+
+# Resharper
+*.ReSharper*/
+
+# User-specific files
+*.rsuser
+*.sln.docstates
+
+# Logs
+*.log
+
+# OS files
+Thumbs.db
+.DS_Store
