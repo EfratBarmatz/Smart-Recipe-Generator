@@ -258,7 +258,7 @@ namespace Smart_Recipe_Generator.Services
                     // 4) As a last resort, return the raw text in steps
                     return new RecipeResponse
                     {
-                        Title = "AI generated result",
+                        Title = "תוצאה שנוצרה על ידי AI",
                         Ingredients = request.Ingredients,
                         Steps = new System.Collections.Generic.List<string> { respText },
                         Servings = request.Servings <= 0 ? 1 : request.Servings
@@ -269,7 +269,7 @@ namespace Smart_Recipe_Generator.Services
                     _logger.LogError(ex, "Failed to parse AI response. Returning raw output.");
                     return new RecipeResponse
                     {
-                        Title = "AI generated result",
+                        Title = "תוצאה שנוצרה על ידי AI",
                         Ingredients = request.Ingredients,
                         Steps = new System.Collections.Generic.List<string> { respText },
                         Servings = request.Servings <= 0 ? 1 : request.Servings
@@ -287,20 +287,22 @@ namespace Smart_Recipe_Generator.Services
         private string BuildPrompt(RecipeRequest request)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("You are a helpful chef assistant. Given the list of ingredients and optional preferences, invent a recipe and return the result as JSON exactly in the following schema:");
+            sb.AppendLine("את/ה עוזר שף מקצועי. צור מתכון על בסיס רשימת הרכיבים וההעדפות, והחזר את התוצאה כ-JSON בדיוק לפי הסכמה הבאה:");
             sb.AppendLine("{");
-            sb.AppendLine("  \"Title\": \"...\",");
-            sb.AppendLine("  \"Ingredients\": [\"...\"],");
-            sb.AppendLine("  \"Steps\": [\"...\"],");
-            sb.AppendLine("  \"Nutrition\": { \"Calories\": 0, \"ProteinGrams\": 0.0, \"FatGrams\": 0.0, \"CarbsGrams\": 0.0 },");
-            sb.AppendLine("  \"ImageDescription\": \"...\",");
+            sb.AppendLine("  \"Title\": \"שם המתכון\",");
+            sb.AppendLine("  \"Description\": \"תיאור מליצי קצר על המנה (2–3 משפטים)\",");
+            sb.AppendLine("  \"Ingredients\": [\"רכיב 1\", \"רכיב 2\"],");
+            sb.AppendLine("  \"Steps\": [\"שלב 1\", \"שלב 2\"],");
+            sb.AppendLine("  \"Nutrition\": { \"Calories\": 250, \"ProteinGrams\": 10.0, \"FatGrams\": 5.0, \"CarbsGrams\": 40.0 },");
+            sb.AppendLine("  \"ImageDescription\": \"תיאור קצר של המראה\",");
             sb.AppendLine("  \"Servings\": 1");
             sb.AppendLine("}");
 
             sb.AppendLine();
-            sb.AppendLine("Respond with JSON only, without additional explanation.");
+            sb.AppendLine("**חשוב מאוד**: כל הטקסט (Title, Description, Ingredients, Steps, ImageDescription) חייב להיות בעברית!");
+            sb.AppendLine("השב רק עם JSON, ללא הסבר נוסף.");
             sb.AppendLine();
-            sb.AppendLine("Ingredients:");
+            sb.AppendLine("רכיבים זמינים:");
             foreach (var ing in request.Ingredients)
             {
                 sb.AppendLine("- " + ing);
@@ -309,21 +311,31 @@ namespace Smart_Recipe_Generator.Services
             if (request.Preferences != null)
             {
                 sb.AppendLine();
-                sb.AppendLine("Preferences:");
-                sb.AppendLine("Vegetarian: " + request.Preferences.Vegetarian);
-                sb.AppendLine("Vegan: " + request.Preferences.Vegan);
-                sb.AppendLine("GlutenFree: " + request.Preferences.GlutenFree);
-                if (request.Preferences.MaxCalories.HasValue)
-                    sb.AppendLine("MaxCalories: " + request.Preferences.MaxCalories.Value);
+                sb.AppendLine("דרישות תזונתיות:");
+                if (request.Preferences.Vegetarian)
+                    sb.AppendLine("- צמחוני");
+                if (request.Preferences.Vegan)
+                    sb.AppendLine("- טבעוני (ללא מוצרים מן החי)");
+                if (request.Preferences.GlutenFree)
+                    sb.AppendLine("- ללא גלוטן");
+                if (request.Preferences.MaxCalories.HasValue && request.Preferences.MaxCalories.Value > 0)
+                    sb.AppendLine($"- מקסימום {request.Preferences.MaxCalories.Value} קלוריות למנה");
             }
 
             sb.AppendLine();
-            sb.AppendLine("Servings: " + (request.Servings <= 0 ? 1 : request.Servings));
+            sb.AppendLine($"מספר מנות: {(request.Servings <= 0 ? 1 : request.Servings)}");
 
             sb.AppendLine();
-            sb.AppendLine("Create a realistic set of steps and a simple nutrition estimate.");
+            sb.AppendLine("צור סט ריאליסטי של שלבים והערכת תזונה פשוטה.");
+            sb.AppendLine();
+            sb.AppendLine("מותר לך להוסיף עד שני רכיבים משלך אם לדעתך הם משפרים את הטעם, המרקם או הריח, בתנאי שהם מתאימים לסגנון ולמגבלות התזונתיות.");
+            sb.AppendLine("הוסף גם תיאור מליצי קצר של המנה (2–3 משפטים) שיהיה מזמין וציורי, מיד אחרי שם המתכון.");
+            sb.AppendLine("אל תשתמש ברכיבים חריגים או לא זמינים – רק חומרים נפוצים במטבח ביתי.");
+            sb.AppendLine();
+            sb.AppendLine("שוב - כל הטקסט בתשובה חייב להיות בעברית בלבד!");
 
             return sb.ToString();
         }
+
     }
 }
