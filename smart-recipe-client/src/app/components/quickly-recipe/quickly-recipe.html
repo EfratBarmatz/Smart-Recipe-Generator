@@ -1,0 +1,44 @@
+@if (recipe) {
+  <div class="recipe-result">
+    <h2>{{ recipe.title }}</h2>
+    <p class="description">{{ recipe.description }}</p>
+    
+    @if (recipe.imageUrl) {
+      <img [src]="recipe.imageUrl" [alt]="recipe.title" />
+    }
+    
+    <div class="servings">
+      <strong>Servings:</strong> {{ recipe.servings }}
+    </div>
+
+    <div class="ingredients">
+      <h3>Ingredients:</h3>
+      <ul>
+        @for (ingredient of recipe.ingredients; track ingredient) {
+          <li>{{ ingredient }}</li>
+        }
+      </ul>
+    </div>
+
+    <div class="steps">
+      <h3>Steps:</h3>
+      <ol>
+        @for (step of recipe.steps; track $index) {
+          <li>{{ step }}</li>
+        }
+      </ol>
+    </div>
+
+    @if (recipe.nutrition) {
+      <div class="nutrition">
+        <h3>Nutrition Info:</h3>
+        <ul>
+          <li><strong>Calories:</strong> {{ recipe.nutrition.calories }}</li>
+          <li><strong>Protein:</strong> {{ recipe.nutrition.proteinGrams }}g</li>
+          <li><strong>Fat:</strong> {{ recipe.nutrition.fatGrams }}g</li>
+          <li><strong>Carbs:</strong> {{ recipe.nutrition.carbsGrams }}g</li>
+        </ul>
+      </div>
+    }
+  </div>
+}

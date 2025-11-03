@@ -1,8 +1,18 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // ← הכתובת של האנגולר שלך
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 // Register application services
 builder.Services.AddHttpClient("ai-client");
 builder.Services.AddScoped<Smart_Recipe_Generator.Services.IImageService, Smart_Recipe_Generator.Services.ImageService>();
@@ -19,7 +29,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

@@ -1,0 +1,24 @@
+.container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+
+  .products-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .generate-button {
+    padding: 10px 20px;
+    background-color: #ff7043;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #ff5722;
+    }
+  }
+}

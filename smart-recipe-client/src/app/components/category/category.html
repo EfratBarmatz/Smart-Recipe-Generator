@@ -1,0 +1,8 @@
+<div class="categories">
+  <button 
+    *ngFor="let cat of categories" 
+    (click)="selectCategory(cat)" 
+    [class.active]="cat === selectedCategory">
+    {{ cat }}
+  </button>
+</div>

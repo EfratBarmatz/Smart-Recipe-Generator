@@ -1,0 +1,18 @@
+.categories {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #ddd;
+
+    &.active {
+      background-color: #ff7043;
+      color: white;
+    }
+  }
+}
