@@ -10,11 +10,14 @@ namespace Smart_Recipe_Generator.Controllers
     public class RecipesController : ControllerBase
     {
         private readonly IAiRecipeService _recipeService;
+        private readonly IImageService _imageService;
 
-        public RecipesController(IAiRecipeService recipeService)
+        public RecipesController(IAiRecipeService recipeService, IImageService imageService)
         {
             _recipeService = recipeService;
+            _imageService = imageService;
         }
+
 
         // GET api/recipes/impl
         [HttpGet("impl")]
@@ -41,6 +44,8 @@ namespace Smart_Recipe_Generator.Controllers
             }
 
             var recipe = await _recipeService.GenerateRecipeAsync(request);
+            var imageUrl = await _imageService.GenerateRecipeImageAsync(recipe.Title + recipe.Description);
+            recipe.ImageUrl = imageUrl;
             return Ok(recipe);
         }
 
