@@ -1,0 +1,22 @@
+<div class="preferences">
+  <label>
+    <input type="checkbox"
+           [checked]="preferences.vegetarian"
+           (change)="updatePreference('vegetarian', $event.target.checked)">
+    צמחוני
+  </label>
+
+  <label>
+    <input type="checkbox"
+           [checked]="preferences.vegan"
+           (change)="updatePreference('vegan', $event.target.checked)">
+    טבעוני
+  </label>
+
+  <label>
+    <input type="checkbox"
+           [checked]="preferences.glutenFree"
+           (change)="updatePreference('glutenFree', $event.target.checked)">
+    ללא גלוטן
+  </label>
+</div>

@@ -1,6 +1,8 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.EntityFrameworkCore;
+using Smart_Recipe_Generator.Repository;
+using Smart_Recipe_Generator.Services;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
@@ -8,18 +10,25 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngularApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200") // ← הכתובת של האנגולר שלך
+            policy.WithOrigins("http://localhost:4200") 
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
 });
 // Register application services
 builder.Services.AddHttpClient("ai-client");
-builder.Services.AddScoped<Smart_Recipe_Generator.Services.IImageService, Smart_Recipe_Generator.Services.ImageService>();
-builder.Services.AddScoped<Smart_Recipe_Generator.Services.IAiRecipeService, Smart_Recipe_Generator.Services.AiRecipeService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IAiRecipeService,AiRecipeService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddDbContext<RecipeDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Home")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
 var app = builder.Build();
 

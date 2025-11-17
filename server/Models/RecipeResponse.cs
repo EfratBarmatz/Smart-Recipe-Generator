@@ -11,6 +11,7 @@ namespace Smart_Recipe_Generator.Models
         public NutritionInfo? Nutrition { get; set; }
         public string? ImageUrl { get; set; }
         public int Servings { get; set; } = 1;
+        public string Tip { get; set; }
     }
 
     public class NutritionInfo

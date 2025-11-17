@@ -1,24 +1,25 @@
-<div>
-  <app-category (categorySelected)="onCategorySelected($event)"></app-category>
+<div class="app-container">
+  <!-- Category View -->
+  <app-category 
+    *ngIf="currentView === 'category'"
+    (categorySelected)="onCategorySelected($event)">
+  </app-category>
 
-  <div class="products">
-    @for (product of products; track product.name) {
-      @if (product.category === selectedCategory) {
-        <app-product-card 
-          [product]="product" 
-          (toggleSelect)="onToggleProduct($event)">
-        </app-product-card>
-      }
-    }
-  </div>
+  <!-- Products View -->
+  <app-product-card 
+    *ngIf="currentView === 'products'"
+    [categoryId]="selectedCategory"
+    (backToCategories)="onBackToCategories()"
+    (generateRecipe)="onGenerateRecipe($event)">
+  </app-product-card>
 
-  <button (click)="generateRecipe()" [disabled]="loading">
-    @if (loading) {
-      Generating Recipe...
-    } @else {
-      Generate Recipe
-    }
-  </button>
-
-  <app-quickly-recipe [recipe]="recipeResponse"></app-quickly-recipe>
+  <!-- Recipe View -->
+  <app-quickly-recipe 
+    *ngIf="currentView === 'recipe'"
+    [recipe]="recipeResponse"
+    [isLoading]="isLoading"
+    [error]="error"
+    (backToProducts)="onBackToProducts()"
+    (createNewRecipe)="onCreateNewRecipe()">
+  </app-quickly-recipe>
 </div>

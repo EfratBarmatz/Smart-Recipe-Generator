@@ -6,6 +6,7 @@ export interface RecipeResponse {
   nutrition?: NutritionInfo;
   imageUrl?: string;
   servings: number;
+  tip: string;
 }
 
 export interface NutritionInfo {

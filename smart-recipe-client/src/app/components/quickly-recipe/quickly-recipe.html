@@ -1,44 +1,113 @@
-@if (recipe) {
-  <div class="recipe-result">
-    <h2>{{ recipe.title }}</h2>
-    <p class="description">{{ recipe.description }}</p>
-    
-    @if (recipe.imageUrl) {
-      <img [src]="recipe.imageUrl" [alt]="recipe.title" />
-    }
-    
-    <div class="servings">
-      <strong>Servings:</strong> {{ recipe.servings }}
+<div class="recipe-container">
+  <!-- Header with Back Button -->
+  <div class="header-section">
+    <button class="back-button" (click)="goBack()">
+      ← חזרה
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-card">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+    <h2 class="loading-title">מכין את המתכון הקסום שלך... ✨</h2>
+    <p class="loading-text">רגע קטן, אנחנו יוצרים משהו מדהים!</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-card">
+    <div class="error-icon">⚠️</div>
+    <h2 class="error-title">אופס! משהו השתבש</h2>
+    <p class="error-text">{{error}}</p>
+    <button class="retry-button" (click)="goBack()">
+      נסה שוב
+    </button>
+  </div>
+
+  <!-- Main Recipe Card -->
+  <div *ngIf="!isLoading && !error" class="recipe-card">
+    <!-- Title Section -->
+    <div class="title-section">
+      <div class="chef-icon-wrapper">
+        <svg class="chef-icon bounce" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor">
+          <path
+            d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z" />
+          <line x1="6" y1="17" x2="18" y2="17" />
+        </svg>
+      </div>
+      <h1 class="main-title">{{displayTitle}}</h1>
+      <p class="subtitle">{{displayDescription}}</p>
     </div>
 
-    <div class="ingredients">
-      <h3>Ingredients:</h3>
-      <ul>
-        @for (ingredient of recipe.ingredients; track ingredient) {
-          <li>{{ ingredient }}</li>
-        }
-      </ul>
+    <!-- Selected Products Section -->
+    <div class="ingredients-section">
+      <h2 class="section-title">
+        <span class="sparkle-icon">✨</span>
+        מרכיבים
+      </h2>
+      <div class="products-list">
+        <span *ngFor="let ingredient of displayIngredients" class="product-badge">
+          {{ingredient}}
+        </span>
+      </div>
+      <p class="servings-info">למספר מנות: {{displayServings}}</p>
     </div>
 
-    <div class="steps">
-      <h3>Steps:</h3>
-      <ol>
-        @for (step of recipe.steps; track $index) {
-          <li>{{ step }}</li>
-        }
+    <!-- Nutrition Info (if available) -->
+    <div *ngIf="recipe?.nutrition" class="nutrition-section">
+      <h3 class="nutrition-title">📊 ערכים תזונתיים למנה</h3>
+      <div class="nutrition-grid">
+        <div class="nutrition-item">
+          <span class="nutrition-label">קלוריות</span>
+          <span class="nutrition-value">{{recipe?.nutrition?.calories}}</span>
+        </div>
+        <div class="nutrition-item">
+          <span class="nutrition-label">חלבון</span>
+          <span class="nutrition-value">{{recipe?.nutrition?.proteinGrams}}g</span>
+        </div>
+        <div class="nutrition-item">
+          <span class="nutrition-label">שומן</span>
+          {{ recipe?.nutrition?.fatGrams }}g
+        </div>
+        <div class="nutrition-item">
+          <span class="nutrition-label">פחמימות</span>
+
+          {{ recipe?.nutrition?.carbsGrams }}g
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions Section -->
+    <div class="instructions-section">
+      <h3 class="instructions-title">🥘 אופן ההכנה</h3>
+      <ol class="instructions-list">
+        <li *ngFor="let step of displaySteps; let i = index" class="instruction-item">
+          <span class="step-number">{{i + 1}}</span>
+          <span class="step-text">{{step}}</span>
+        </li>
       </ol>
     </div>
 
-    @if (recipe.nutrition) {
-      <div class="nutrition">
-        <h3>Nutrition Info:</h3>
-        <ul>
-          <li><strong>Calories:</strong> {{ recipe.nutrition.calories }}</li>
-          <li><strong>Protein:</strong> {{ recipe.nutrition.proteinGrams }}g</li>
-          <li><strong>Fat:</strong> {{ recipe.nutrition.fatGrams }}g</li>
-          <li><strong>Carbs:</strong> {{ recipe.nutrition.carbsGrams }}g</li>
-        </ul>
-      </div>
-    }
+    <!-- Chef Tip Section -->
+    <div class="tip-section">
+      <h3 class="tip-title">💡 טיפ שף</h3>
+      <p class="tip-text">
+        {{recipe?.tip}}
+      </p>
+    </div>
+
+    <!-- Create New Recipe Button -->
+    <button class="new-recipe-button" (click)="createNew()">
+      צור מתכון חדש ✨
+    </button>
   </div>
-}
+
+  <!-- Animated Background -->
+  <div class="background-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+  </div>
+</div>

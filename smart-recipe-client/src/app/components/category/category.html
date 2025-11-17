@@ -1,8 +1,39 @@
-<div class="categories">
-  <button 
-    *ngFor="let cat of categories" 
-    (click)="selectCategory(cat)" 
-    [class.active]="cat === selectedCategory">
-    {{ cat }}
-  </button>
+<div class="category-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="chef-icon-wrapper">
+      <div class="chef-icon-glow"></div>
+      <svg class="chef-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
+        <line x1="6" y1="17" x2="18" y2="17"/>
+      </svg>
+    </div>
+    <h1 class="main-title">Smart Recipe Generator</h1>
+    <p class="subtitle">צור מתכונים קסומים במגע כפתור ✨</p>
+  </div>
+
+  <!-- Categories Grid -->
+  <div class="categories-section">
+    <h2 class="section-title">בחר קטגוריה 🎯</h2>
+    <div class="categories-grid">
+      <button 
+        *ngFor="let category of categories" 
+        (click)="selectCategory(category.id)"
+        class="category-card"
+        [attr.data-color]="category.color">
+        <div class="category-gradient bg-gradient-{{category.color}}"></div>
+        <div class="category-content">
+          <div class="category-emoji">{{category.emoji}}</div>
+          <p class="category-name">{{category.name}}</p>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Animated Background -->
+  <div class="background-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
 </div>

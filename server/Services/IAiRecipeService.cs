@@ -9,5 +9,7 @@ namespace Smart_Recipe_Generator.Services
     public interface IAiRecipeService
     {
         Task<RecipeResponse> GenerateRecipeAsync(RecipeRequest request);
+        Task<bool> ValidateCategoryAsync(string name);
+        Task<bool> ValidateProductAsync(string name);
     }
 }

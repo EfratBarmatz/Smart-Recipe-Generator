@@ -1,4 +1,58 @@
-<div class="product-card" [class.selected]="selected" (click)="onClick()">
-  <img [src]="product.imageUrl" alt="{{product.name}}">
-  <h3>{{ product.name }}</h3>
+<div class="product-container">
+  <!-- Header with Back Button -->
+  <div class="header-section">
+    <button class="back-button" (click)="goBack()">
+      ← חזרה לקטגוריות
+    </button>
+  </div>
+
+  <!-- Main Card -->
+  <div class="product-card">
+    <div class="card-header">
+      <h2 class="card-title">בחר מוצרים 🛒</h2>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid">
+      <button *ngFor="let product of currentProducts" (click)="toggleProduct(product)" class="product-item"
+        [class.selected]="product.selected">
+        <div class="product-content">
+          <p class="product-name">{{product.name}}</p>
+          <span *ngIf="product.selected" class="checkmark">✓</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Servings Selector -->
+    <div class="servings-section">
+      <label class="servings-label">כמה מנות? 🍽️</label>
+      <div class="servings-controls">
+        <button class="servings-button" (click)="decreaseServings()">-</button>
+        <div class="servings-display">
+          <span class="servings-number">{{servings}}</span>
+        </div>
+        <button class="servings-button" (click)="increaseServings()">+</button>
+      </div>
+    </div>
+
+    <app-preferences [preferences]="preferences" (preferencesChange)="onPreferencesChange($event)">
+    </app-preferences>
+
+    <!-- Generate Button -->
+    <button *ngIf="hasSelectedProducts" (click)="onGenerateRecipe()" class="generate-button">
+      <span class="button-content">
+        <span class="sparkle">✨</span>
+        צור מתכון קסום!
+        <span class="sparkle reverse">✨</span>
+      </span>
+      <div class="button-glow"></div>
+    </button>
+  </div>
+
+  <!-- Animated Background -->
+  <div class="background-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
 </div>

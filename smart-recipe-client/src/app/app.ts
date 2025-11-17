@@ -1,92 +1,93 @@
-import { Component, signal } from '@angular/core';
-import { QuicklyRecipe } from './components/quickly-recipe/quickly-recipe';
+import { Component } from '@angular/core';
 import { ProductCard } from './components/product-card/product-card';
 import { Category } from './components/category/category';
+import { CommonModule } from '@angular/common';
 import { RecipeService } from './services/recipe';
 import { RecipeRequest, Preferences } from './models/recipe-request';
 import { RecipeResponse } from './models/recipe-response';
+import { QuicklyRecipe } from './components/quickly-recipe/quickly-recipe';
 
 @Component({
   selector: 'app-root',
-  imports: [QuicklyRecipe, ProductCard, Category],
   templateUrl: './app.html',
-  styleUrl: './app.css',
-  standalone: true
+  styleUrls: ['./app.css'],
+  standalone: true,
+  imports: [ProductCard, Category, CommonModule, QuicklyRecipe],
 })
 export class App {
-  protected readonly title = signal('smart-recipe-client');
-  selectedCategory = '';
-  products = [
-    { name: 'Apple', category: 'Fruits', imageUrl: 'https://via.placeholder.com/150', selected: false },
-    { name: 'Banana', category: 'Fruits', imageUrl: 'https://via.placeholder.com/150', selected: false },
-    { name: 'Carrot', category: 'Vegetables', imageUrl: 'https://via.placeholder.com/150', selected: false },
-    { name: 'Milk', category: 'Dairy', imageUrl: 'https://via.placeholder.com/150', selected: false },
-    { name: 'Cinnamon', category: 'Spices', imageUrl: 'https://via.placeholder.com/150', selected: false }
-  ];
-
-  recipeResponse: RecipeResponse | null = null;
-  loading = false;
-
+  currentView: 'category' | 'products' | 'recipe' = 'category';
+  selectedCategory: string = '';
+  selectedProducts: string[] = [];
+  servings: number = 2;
+  
+  // הוספת משתנים חסרים
   preferences: Preferences = {
     vegetarian: false,
     vegan: false,
-    glutenFree: false
+    glutenFree: false,
+    maxCalories: undefined
   };
-  servings = 1;
+  
+  recipeResponse: RecipeResponse | null = null;
+  isLoading: boolean = false;
+  error: string | null = null;
 
-  constructor(private recipeService: RecipeService) {}
+  constructor(private recipeService: RecipeService) { }
 
-  onCategorySelected(category: string) {
-    this.selectedCategory = category;
+  onCategorySelected(categoryId: string): void {
+    this.selectedCategory = categoryId;
+    this.currentView = 'products';
   }
 
- // app.ts
-onToggleProduct(product: any) {
-  // עדכון המוצר המקורי במערך
-  const originalProduct = this.products.find(p => p.name === product.name);
-  if (originalProduct) {
-    originalProduct.selected = product.selected;
-  }
-  console.log('Product toggled:', product.name, 'Selected:', product.selected);
-}
-
-  // פונקציה שאוספת את כל המוצרים המסומנים
-  getSelectedProducts(): string[] {
-    return this.products
-      .filter(p => p.selected)
-      .map(p => p.name);
+  onBackToCategories(): void {
+    this.currentView = 'category';
+    this.selectedCategory = '';
   }
 
-  generateRecipe() {
-    const selectedIngredients = this.getSelectedProducts();
-    
-    if (selectedIngredients.length === 0) {
-      alert('אנא בחר לפחות מוצר אחד');
-      return;
-    }
+  onGenerateRecipe(data: { products: string[], servings: number }): void {
+    this.selectedProducts = data.products;
+    this.servings = data.servings;
+    this.currentView = 'recipe';
+    this.isLoading = true;
+    this.error = null;
 
-    this.loading = true;
-    
-    // בניית הבקשה לפי המודל
     const request: RecipeRequest = {
-      ingredients: selectedIngredients,
+      ingredients: this.selectedProducts,
       preferences: this.preferences,
       servings: this.servings
     };
 
-    console.log('Sending request to server:', request);
+    console.log('Sending request:', request);
 
     this.recipeService.generateRecipe(request).subscribe({
-      next: (response: RecipeResponse) => {
+      next: (response) => {
         this.recipeResponse = response;
-        this.loading = false;
-        console.log('Recipe received:', response);
+        this.isLoading = false;
+        console.log('Recipe generated:', response);
       },
-      error: (error) => {
-        console.error('Error generating recipe:', error);
-        alert('נכשל ביצירת המתכון. נסה שוב.');
-        this.loading = false;
+      error: (err) => {
+        this.error = 'שגיאה ביצירת המתכון. אנא נסה שוב.';
+        this.isLoading = false;
+        console.error('Error generating recipe:', err);
       }
     });
+  }
+
+  onBackToProducts(): void {
+    this.currentView = 'products';
+  }
+
+  onCreateNewRecipe(): void {
+    this.currentView = 'category';
+    this.selectedCategory = '';
+    this.selectedProducts = [];
+    this.servings = 2;
+    this.recipeResponse = null;
+    this.error = null;
+  }
+
+  // פונקציות לעדכון preferences
+  updatePreferences(prefs: Partial<Preferences>): void {
+    this.preferences = { ...this.preferences, ...prefs };
   }
 }

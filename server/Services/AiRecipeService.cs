@@ -194,6 +194,7 @@ namespace Smart_Recipe_Generator.Services
             sb.AppendLine("  \"Nutrition\": { \"Calories\": 250, \"ProteinGrams\": 10.0, \"FatGrams\": 5.0, \"CarbsGrams\": 40.0 },");
             sb.AppendLine("  \"ImageDescription\": \"תיאור קצר של המראה\",");
             sb.AppendLine("  \"Servings\": 1");
+            sb.AppendLine("  \"Tip\": \"טיפ מהשף להכנת המתכון בקריצה\",");
             sb.AppendLine("}");
             sb.AppendLine();
             sb.AppendLine("**חשוב מאוד**: כל הטקסט (Title, Description, Ingredients, Steps, ImageDescription) חייב להיות בעברית!");
@@ -229,6 +230,32 @@ namespace Smart_Recipe_Generator.Services
             sb.AppendLine("שוב - כל הטקסט בתשובה חייב להיות בעברית בלבד!");
 
             return sb.ToString();
+        }
+
+        public Task<bool> ValidateCategoryAsync(string name)
+        {
+            var endpoint = _config["AI:Endpoint"];
+            var apiKey = _config["AI:ApiKey"];
+            var provider = (_config["AI:Provider"] ?? string.Empty).ToLowerInvariant();
+
+            _logger.LogInformation("AI provider={provider}; endpointConfigured={hasEndpoint}; apiKeyPresent={hasKey}",
+                provider, !string.IsNullOrWhiteSpace(endpoint), !string.IsNullOrWhiteSpace(apiKey));
+
+
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> ValidateProductAsync(string name)
+        {
+            var endpoint = _config["AI:Endpoint"];
+            var apiKey = _config["AI:ApiKey"];
+            var provider = (_config["AI:Provider"] ?? string.Empty).ToLowerInvariant();
+
+            _logger.LogInformation("AI provider={provider}; endpointConfigured={hasEndpoint}; apiKeyPresent={hasKey}",
+                provider, !string.IsNullOrWhiteSpace(endpoint), !string.IsNullOrWhiteSpace(apiKey));
+
+
+            return Task.FromResult(true);
         }
     }
 }
